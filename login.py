@@ -57,6 +57,7 @@ class Loginwindow(tk.Frame):
 		password = password_input.get()
 		db = DB_commu()
 		db.auth_query(username, password)
+		
 
 	def _cancel_btn_clicked(self):
 		quit()
