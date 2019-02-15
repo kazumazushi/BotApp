@@ -26,7 +26,7 @@ class DB_engine():
 class DB_session(DB_engine):
 	def __init__(self):
 		super().__init__()
-		Session = sessionmaker(autocommit=True, autoflush=False, bind=self.engine)
+		Session = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 		self.session = Session()
 		metadata = MetaData(bind=self.engine)
 		if self.session == "":
@@ -43,12 +43,41 @@ class Userquery(DB_session):
 		self.query_result = self.session.query(Query_table.account, Query_table.password).filter(Query_table.account == usr).filter(Query_table.password == pwd).count()
 		#print(self.query_result)
 		if self.query_result == 1:
-			#tm.showinfo("Login info", " Welcome {}".format(usr))
-			print("Login info", " Welcome {}".format(usr) , "!!")
+			tm.showinfo("Login info", " Welcome {}".format(usr))
 		else:
-			#tm.showerror("Login error", "Incorrect username")
-			print("Login error", "Incorrect username")
+			tm.showerror("Login error", "Incorrect username. Please input again correctly")
 		self.session.close()
+
+class Userregister(DB_session):
+	def __init__(self):
+		super().__init__()
+
+	def register(self, newusr, newpwd, newemail):
+		#self.id = Query_table(id = 200)
+		self.newusr = newusr
+		self.newpwd =  newpwd
+		self.newemail = newemail
+		self.reg_data = Query_table(account = self.newusr, password = self.newpwd, email = self.newemail)
+		self.add_user = self.session.add(self.reg_data)
+		self.session.commit() #here
+		self.usercount = self.session.query(Query_table.account, Query_table.password).filter(Query_table.account == self.newusr).filter(Query_table.password == self.newpwd).filter(Query_table.password == self.newemail).count()
+		if  self.usercount == 1:
+			tm.showinfo("User {} has been successfully created".format(self.newusr))
+		else:
+			tm.showerror("Registeration error happened!!")
+
+class Session_close(DB_session):
+	def __init__(self):
+		super().__init__()
+
+	def auth_close(self):
+		self.session.close()
+		self.session_evidence = self.session
+		if self.session_evidence == "":
+			tm.showinfo("Thank you for coming today, currently I have closed session{}.".format(self.session))
+		else:
+			tm.showinfo("Umm, something wrong with closing session. I still have your session strangely{}.".format(self.session))
+
 
 #Base = dec(bind=engine)
 Base = dec()

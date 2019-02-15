@@ -5,8 +5,8 @@ import tkinter as tk
 import tkinter.messagebox as tm
 import os
 import logging
-from db_session import DB_commu
-
+from db_session import DB_engine, DB_session, Userquery, Userregister, Session_close, Query_table, Query_table2
+"""
 class Logger():
 	def __init__(self):
 		print('start')
@@ -27,13 +27,6 @@ class Logger():
 		
 """
 
-logging.basicConfig(filename="/tmp/simple_err.log",
-                    format='%(asctime)s %(message)s',
-                    filemode='a')
-logger=logging.getLogger()
-logger.setLevel(logging.DEBUG)
-"""
-
 class Loginwindow(tk.Frame):
 	def __init__(self, master):
 		super().__init__(master)
@@ -47,27 +40,67 @@ class Loginwindow(tk.Frame):
 		self.password_label.place(x=30 , y=70)
 		self.account_input.place(x=90 , y=50)
 		self.password_input.place(x=90 , y=70) 
-		self.login_button =  tk.Button(master, text='Logon', width=10, command=self._login_btn_clicked)
-		self.login_button.place(x=70 , y=100)
-		self.cancel_button =  tk.Button(master, text='Cancel', width=10, command=self._cancel_btn_clicked)
-		self.cancel_button.place(x=180 , y=100)
+		self.login_button =  tk.Button(master, text='Logon', width=6, command=self._login_btn_clicked)
+		self.login_button.place(x=20 , y=100)
+		self.cancel_button =  tk.Button(master, text='Cancel', width=6, command=self._cancel_btn_clicked)
+		self.cancel_button.place(x=110 , y=100)
+		self.login_button =  tk.Button(master, text='Register', width=6, command=self._register_btn_clicked)
+		self.login_button.place(x=200, y=100)
 
-	def _login_btn_clicked(self, account_input, password_input):
-		username = account_input.get()
-		password = password_input.get()
-		db = DB_commu()
-		db.auth_query(username, password)
-		
+	def _login_btn_clicked(self):
+		self.username = self.account_input.get()
+		self.password = self.password_input.get()
+		authcheck = Userquery()
+		authcheck.auth_session(self.username, self.password)
 
 	def _cancel_btn_clicked(self):
+		cancel_session = Session_close()
 		quit()
 
+	def _register_btn_clicked(self):
+		reg = tk.Tk()
+		reg.title("Registration")
+		reg.geometry('300x200')
+		regwin = Regwindow(reg)
+		regwin.mainloop()
+
+class Regwindow(tk.Frame):
+	def __init__(self, parent):
+		super().__init__(parent)
+		self.reg_account_label = tk.Label(parent, text='Registration Account')
+		self.reg_password_label = tk.Label(parent, text='Registration Password')
+		self.reg_email_label = tk.Label(parent, text='Registration email')
+		self.reg_account_input = tk.Entry(parent)
+		self.reg_password_input = tk.Entry(parent)
+		self.reg_email_input = tk.Entry(parent)
+		self.reg_account_label.place(x=5 , y=20)
+		self.reg_password_label.place(x=5, y=50)
+		self.reg_email_label.place(x=5, y=80)
+		self.reg_account_input.place(x=80 , y=20)
+		self.reg_password_input.place(x=80 , y=50) 
+		self.reg_email_input.place(x=80, y=80) 
+		self.reg_button = tk.Button(parent, text='Registration', width=5, command=self.reg_decision_btn_clicked)
+		self.reg_button.place(x=20 , y=170)
+		self.reg_cancel_button = tk.Button(parent, text='Cancel', width=5, command=self.reg_cancel_btn_clicked)
+		self.reg_cancel_button.place(x=120 , y=170)
+
+	def reg_decision_btn_clicked(self):
+		reg_pass = Userregister()
+		self.newuser = self.reg_account_input.get()
+		self.newpassword = self.reg_password_input.get()
+		self.newemail = self.reg_email_input.get()
+		reg_pass.register(self.newuser,self.newpassword, self.newemail)
+
+	def reg_cancel_btn_clicked(self):
+		cancel_session = Session_close()
+		quit()
+
+
+
 if __name__=='__main__':
-	output = Logger()
 	root = tk.Tk()
 	root.title("Welcome to Chat")
 	root.geometry('300x200')
 	app = Loginwindow(root)
 	app.mainloop()
-
 
