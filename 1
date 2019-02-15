@@ -45,12 +45,12 @@ class Userquery(DB_session):
 		#self.query_result = self.session.query(Query_table.account, Query_table.password).filter(Query_table.account == usr).filter(Query_table.password == self.pwd).count()
 		#print(self.query_result)
 		self.pwd = bcrypt.hashpw(pwd.encode('utf8'), bcrypt.gensalt())
-		self.query_result = self.session.query(Query_table.account).filter(Query_table.account == usr).count()
+		self.query_result = self.session.query(Query_table.account, Query_table.password).filter(Query_table.account == usr).count()
 		if self.query_result == 1:
-			 #if bcrypt.hashpw(pwd.encode, self.pwd) == self.pwd: #should be modified.
-			tm.showinfo("Login info", " Welcome {}".format(usr))
-			 #else:
-			 #tm.showerror("Login error", "Incorrect username. Please input again correctly")
+			 if bcrypt.hashpw(pwd.encode, self.pwd) in self.pwd: 
+			 	tm.showinfo("Login info", " Welcome {}".format(usr))
+			 else:
+			 	tm.showerror("Login error", "Incorrect username. Please input again correctly")
 		else:
 			tm.showerror("Login error", "Incorrect username. Please input again correctly")
 		self.session.close()
