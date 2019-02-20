@@ -13,7 +13,9 @@ import bcrypt
 import urllib as ul
 import sys
 import tkinter.messagebox as tm
-	#from  login import Loginwindow
+import time
+from simplebot_test import TkinterGUIExample
+
 
 ##DB_Session Management:
 class DB_engine():
@@ -49,6 +51,9 @@ class Userquery(DB_session):
 		if self.query_result == 1:
 			 #if bcrypt.hashpw(pwd.encode, self.pwd) == self.pwd: #should be modified.
 			tm.showinfo("Login info", " Welcome {}".format(usr))
+			time.sleep(1.5)
+			self.botwindow = TkinterGUIExample()
+			self.botwindow.mainloop()
 			 #else:
 			 #tm.showerror("Login error", "Incorrect username. Please input again correctly")
 		else:
