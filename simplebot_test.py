@@ -11,7 +11,7 @@ import time
 import praw
 import re
 import pdb
-
+import sys
 
 class TkinterGUIExample(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -35,14 +35,43 @@ class TkinterGUIExample(tk.Tk):
 
 
 	def get_response(self):
-		user_input = self.usr_input.get()
+		usr_input = self.usr_input.get()
 		self.usr_input.delete(0, tk.END)
 
 		## Reddit API
 		self.r = praw.Reddit('chattest_bot')
-		self.subreddit = self.r.subreddit("all").search(user_input, sort="new", limit=11)
-		for submission in self.subreddit:
-			pass
+
+		if len(usr_input) > 0:
+			if "comment" in usr_input:
+				self.subreddit = self.r.subreddit("all").comments(limit=100).search(usr_input, sort="new", limit=100)
+				for submission in self.subreddit:
+					output = submission
+				self.conversation['state'] = 'normal'
+				self.conversation.insert(tk.END, "\nHuman: " + str(usr_input) + "\n\n" + "ChatBotA: Title is " + str(output) + "\n\n" "ChatBotB: " + "Hi, sorry for the interruption" + "\n")
+				self.conversation['state'] = 'disabled'
+				time.sleep(1.5)
+
+			elif "title" in usr_input:
+				self.subreddit = self.r.subreddit("all").search(usr_input, sort="new", limit=100)
+				for submission in self.subreddit:
+					output = submission.title
+				self.conversation['state'] = 'normal'
+				self.conversation.insert(tk.END, "\nHuman: " + str(usr_input) + "\n\n" + "ChatBotA: The title is " + str(output) + "\n\n" "ChatBotB: " + "Hi, sorry for the interruption" + "\n")
+				self.conversation['state'] = 'disabled'
+				time.sleep(1.5)
+
+			elif "author" in usr_input:
+				self.subreddit = self.r.subreddit("all").search(usr_input, sort="new", limit=100)
+				for submission in self.subreddit:
+					output = submission.author
+				self.conversation['state'] = 'normal'
+				self.conversation.insert(tk.END, "\nHuman: " + str(usr_input) + "\n\n" + "ChatBotA: The author is " + str(output) + "\n\n" "ChatBotB: " + "Hi, sorry for the interruption" + "\n")
+				self.conversation['state'] = 'disabled'
+				time.sleep(1.5)
+		else:
+				self.conversation['state'] = 'normal'
+				self.conversation.insert(tk.END, "ChatBotA and B: Please please please input something.\n")
+				self.conversation['state'] = 'disabled'
 
 		#polite_users = set()   # to avoid duplicates
 
@@ -56,11 +85,6 @@ class TkinterGUIExample(tk.Tk):
 		"""
 
 			#response = self.get_response(user_input)
-		self.conversation['state'] = 'normal'
-		self.conversation.insert(tk.END, "Human: " + str(user_input) + "\n\n" + "ChatBotA: Title is " + str(submission.title) + " and the author is " + str(submission.author) + " and URL is " + str(submission.url) + " and Visited is " + str(submission.visited)  
-			+ " and comments in this section says " + "\n\n" + "ChatBotB: " + "Hi, sorry for the interruption" + "\n")
-		self.conversation['state'] = 'disabled'
-		time.sleep(0.5)
 
 if __name__ == '__main__':
 	gui_example = TkinterGUIExample()
