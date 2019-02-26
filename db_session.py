@@ -16,7 +16,6 @@ import tkinter.messagebox as tm
 import time
 from simplebot_test import TkinterGUIExample
 
-
 ##DB_Session Management:
 class DB_engine():
 	def __init__(self):
@@ -39,6 +38,7 @@ class DB_session(DB_engine):
 
 
 class Userquery(DB_session):
+
 	def __init__(self):
 		super().__init__()
 
@@ -46,19 +46,29 @@ class Userquery(DB_session):
 		#self.pwd = bcrypt.hashpw(pwd.encode('utf8'), bcrypt.gensalt())
 		#self.query_result = self.session.query(Query_table.account, Query_table.password).filter(Query_table.account == usr).filter(Query_table.password == self.pwd).count()
 		#print(self.query_result)
+		self.text_usr = usr
 		self.pwd = bcrypt.hashpw(pwd.encode('utf8'), bcrypt.gensalt())
-		self.query_result = self.session.query(Query_table.account).filter(Query_table.account == usr).count()
+		self.query_result = self.session.query(Query_table.account).filter(Query_table.account == self.text_usr).count()
 		if self.query_result == 1:
 			 #if bcrypt.hashpw(pwd.encode, self.pwd) == self.pwd: #should be modified.
-			tm.showinfo("Login info", " Welcome {}".format(usr))
+			tm.showinfo("Login info", " Welcome {}".format(self.text_usr))
 			time.sleep(1.5)
 			self.botwindow = TkinterGUIExample()
+			self.botwindow.display_usr(self.text_usr)
+			self.botwindow.greeting_msg() 
 			self.botwindow.mainloop()
 			 #else:
 			 #tm.showerror("Login error", "Incorrect username. Please input again correctly")
 		else:
 			tm.showerror("Login error", "Incorrect username. Please input again correctly")
 		self.session.close()
+
+
+	#@classmethod
+	#def User_info(cls):
+	#	display_user = cls(auth_session.text_usr)
+	#	print(display_user)
+
 
 class Userregister(DB_session):
 	def __init__(self):
@@ -70,7 +80,7 @@ class Userregister(DB_session):
 		self.newpwd =  bcrypt.hashpw(newpwd.encode('utf8'), bcrypt.gensalt())
 		self.newemail = newemail
 		self.reg_data = Query_table(account = self.newusr, password = self.newpwd, email = self.newemail)
-		self.add_user = self.session.add(self.reg_data)
+		self.session.add(self.reg_data)
 		self.session.commit() #here
 		self.usercount = self.session.query(Query_table.account, Query_table.password).filter(Query_table.account == self.newusr).filter(Query_table.password == self.newpwd).filter(Query_table.password == self.newpwd).count()
 		if  self.usercount == 1:
