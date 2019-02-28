@@ -16,10 +16,10 @@ import random
 import datetime
 
 
-class TkinterGUIExample(tk.Tk):
+class Chat_usr(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
-		self.title("Chatterbot")
+		self.title("Talk to usr")
 		self.initialize()
 		
 
@@ -38,8 +38,8 @@ class TkinterGUIExample(tk.Tk):
 		self.conversation.grid(column=0, row=2, columnspan=2, sticky='nesw', padx=3, pady=3)
 
 
-	def display_inbot(self, botdisplay):
-		self.botdisplay = botdisplay
+	def display_inusr(self, usrdisplay):
+		self.usrdisplay = usrdisplay
 
 
 	def greeting_msg(self):
@@ -125,6 +125,6 @@ class TkinterGUIExample(tk.Tk):
 				#response = self.get_response(user_input)
 
 if __name__ == '__main__':
-	gui_example = TkinterGUIExample()
-	gui_example.mainloop()
+	chatting = Chat_usr()
+	chatting.mainloop()
 
